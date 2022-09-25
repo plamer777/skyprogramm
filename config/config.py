@@ -1,8 +1,13 @@
-"""The unit contains named constants fo different purposes like JSON
+"""The unit contains named constants for different purposes like JSON
 uploading, DAO testing"""
 from os import path
+
 POSTS_FILE = path.join('data', 'posts.json')
 COMMENTS_FILE = path.join('data', 'comments.json')
+LOG_FILE = path.join('logs', 'api.log')
+
+LOG_FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
+
 POSTS_KEYS = {'poster_name',
               'poster_avatar',
               'pic',
