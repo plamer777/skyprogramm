@@ -16,6 +16,7 @@ class PostsDao:
         self.comments_filename = comments_filename
         self.posts = self.load_posts()
         self.comments = self.load_comments()
+        self.tagged_posts = self.create_tagged_posts()
 
     def load_posts(self) -> list:
         """This method uploads all posts from file
@@ -43,7 +44,7 @@ class PostsDao:
 
     def get_all(self) -> list:
         """This method returns all posts from posts field of an instance"""
-        return self.posts
+        return self.tagged_posts
 
     def get_by_pk(self, pk: int = 1) -> dict:
         """The method returns a post found by 'pk' or an empty dict
@@ -53,7 +54,7 @@ class PostsDao:
         Return:
             post - a post found by pk, or an empty dict instead
         """
-        posts = self.posts
+        posts = self.tagged_posts
 
         for post in posts:
 
@@ -71,7 +72,7 @@ class PostsDao:
         Return:
             found_posts - a list of dicts with found posts data
         """
-        posts = self.posts
+        posts = self.tagged_posts
         found_posts = []
 
         for post in posts:
@@ -82,7 +83,7 @@ class PostsDao:
 
         return found_posts
 
-    def refresh_cash(self):
+    def refresh_cache(self):
         """This is additional method on the future to refresh data in posts
         field"""
         self.posts = self.load_posts()
@@ -97,7 +98,7 @@ class PostsDao:
             found_posts - a list of dicts with posts data
         """
         found_posts = []
-        posts = self.posts
+        posts = self.tagged_posts
         is_user_found = False
 
         for post in posts:
@@ -141,3 +142,72 @@ class PostsDao:
             raise ValueError('Нет такого поста')
 
         return found_comments
+
+    def create_tagged_posts(self):
+        """This method turns tags with '#' into links"""
+        tagged_posts = []
+
+        for post in self.posts:
+
+            # use copy of current post to save original post without links
+            added_post = post.copy()
+
+            if '#' in post.get('content'):
+
+                added_post = self._create_tag_link(added_post)
+
+            tagged_posts.append(added_post)
+
+        return tagged_posts
+
+    @staticmethod
+    def _create_tag_link(post: dict):
+        """Secondary method to create links for tags in posts.
+
+        :param post: the post to find and create link for tags starts with '#'
+        """
+        words = post.get('content').split(' ')
+
+        for num, word in enumerate(words):
+
+            if word.startswith("#"):
+                tagged_str = f'<a href=/tags/{word[1:]}>{word}</a>'
+
+                # changing tag with prepared link
+                words[num] = tagged_str
+
+                # write new content field with html tags
+                post['content'] = ' '.join(words)
+
+        return post
+
+    def get_all_tagged_posts(self):
+        """The method return all posts also including ones having tags"""
+        return self.tagged_posts
+
+    def refresh_tagged_posts(self):
+        """Refreshing of a tagged posts cache if original posts were changed"""
+        self.refresh_cache()
+        self.tagged_posts = self.create_tagged_posts()
+
+    def search_by_tag(self, tag_name: str):
+        """This method serves to find all posts contains tags starting with
+        '#'.
+
+        :param tag_name: name of searching tag without '#' symbol
+        """
+        found_posts = []
+        tag_name = '#' + tag_name.lower()
+
+        for post in self.posts:
+
+            word_list = post.get('content').lower().split(' ')
+
+            if tag_name in word_list:
+
+                found_posts.append(post)
+
+        return found_posts
+
+
+

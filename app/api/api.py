@@ -2,13 +2,12 @@
 all posts and post found by id in JSON format
 """
 from flask import Blueprint, jsonify
-from dao.posts_dao import PostsDao
+from config.config import post_dao
 from config.config import POSTS_FILE, COMMENTS_FILE, LOG_FILE, LOG_FORMAT
 from utils import get_new_logger
 
 # Creating Blueprint, PostsDao and Logger instances
 api_blueprint = Blueprint('api_blueprint', __name__)
-post_dao = PostsDao(POSTS_FILE, COMMENTS_FILE)
 api_logger = get_new_logger(LOG_FILE)
 
 
