@@ -6,17 +6,22 @@ import json
 class PostsDao:
     """This class serves as DAO"""
 
-    def __init__(self, posts_filename: str, comments_filename: str):
+    def __init__(self, posts_path: str,
+                 comments_path: str,
+                 bookmarks_path: str):
         """Initialization of PostsDao class.
 
-        :param posts_filename: the filename of JSON with posts data
-        :param comments_filename: the filename of JSON with comments data
+        :param posts_path: the filename of JSON with posts data
+        :param comments_path: the filename of JSON with comments data
+        :param bookmarks_path: the JSON's filename with bookmarks data
         """
-        self.posts_filename = posts_filename
-        self.comments_filename = comments_filename
+        self.posts_filename = posts_path
+        self.comments_filename = comments_path
+        self.bookmarks_filename = bookmarks_path
         self.posts = self.load_posts()
         self.comments = self.load_comments()
         self.tagged_posts = self.create_tagged_posts()
+        self.bookmarks = self.load_bookmarks()
 
     def load_posts(self) -> list:
         """This method uploads all posts from file
@@ -181,10 +186,6 @@ class PostsDao:
 
         return post
 
-    def get_all_tagged_posts(self):
-        """The method return all posts also including ones having tags"""
-        return self.tagged_posts
-
     def refresh_tagged_posts(self):
         """Refreshing of a tagged posts cache if original posts were changed"""
         self.refresh_cache()
@@ -199,15 +200,104 @@ class PostsDao:
         found_posts = []
         tag_name = '#' + tag_name.lower()
 
-        for post in self.posts:
+        for num, post in enumerate(self.posts):
 
             word_list = post.get('content').lower().split(' ')
 
             if tag_name in word_list:
 
-                found_posts.append(post)
+                found_posts.append(self.tagged_posts[num])
 
         return found_posts
 
+    def save_to_bookmarks(self, post_id: int):
+        """Saving a post by provided id into JSON file
 
+        :param post_id: identificator of saved post
+        """
+        post = self.get_by_pk(post_id)
 
+        if post not in self.bookmarks:
+            self.bookmarks.append(post)
+
+        self._save_bookmarks_to_json()
+
+    def remove_from_bookmarks(self, post_id: int):
+        """This method removes a post from JSON file and bookmarks field
+
+        :param post_id: an identificator of removed post
+        """
+        post = self.get_by_pk(post_id)
+
+        if post in self.bookmarks:
+            self.bookmarks.remove(post)
+
+        self._save_bookmarks_to_json()
+
+    def _save_bookmarks_to_json(self):
+        """A secondary method serves to save a bookmarks field of PostsDao class
+        into JSON file"""
+        with open(self.bookmarks_filename, 'w', encoding='utf-8') as fout:
+
+            json.dump(self.bookmarks, fout, ensure_ascii=False)
+
+    def load_bookmarks(self):
+        """Loading bookmarks from JSON file"""
+        with open(self.bookmarks_filename, encoding='utf-8') as fin:
+
+            json_data = json.load(fin)
+
+        return json_data
+
+    def get_all_bookmarks(self):
+        """This method returns all bookmarks stored in a bookmarks field"""
+        return self.bookmarks
+
+    def cut_content(self, post_id: int, length: int = 0):
+        """Cutting a content of a post found by provided post_id to demanded
+        length subject to the presence of <a></a> tags. If the first tag is
+        present, the slice will be made so that the closing
+        tag </a> gets into it
+
+        :param post_id: an identificator of demanded post
+        :param length: a demanded length of a content
+        """
+        post = self.get_by_pk(post_id)
+
+        if length:
+
+            finished_post = post.copy()
+
+            cut_content = post.get('content')[:length]
+
+            if '<' in cut_content and '</a>' not in cut_content:
+
+                end_index = post.get('content').index('</a>')
+
+                cut_post = post.get('content')[:end_index] + '</a>'
+
+                finished_post['content'] = cut_post
+
+            else:
+
+                finished_post['content'] = cut_content
+
+            return finished_post
+
+        return post
+
+    def cut_posts_content(self, post_list: list, length: int = 0):
+        """This method serves to cut content of list of posts.
+
+        :param post_list: a list of post to cut content in
+        :param length: a demanded length of posts' content
+        """
+        cut_posts = []
+
+        for post in post_list:
+
+            cut_post = self.cut_content(post.get('pk'), length)
+
+            cut_posts.append(cut_post)
+
+        return cut_posts

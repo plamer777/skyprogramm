@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SKYPROGRAM {{tag}}</title>
-  <link href="/css/styles.min.css" rel="stylesheet">
+  <link href="/static/css/styles.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -16,7 +16,7 @@
           <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#back"></use>
         </svg>
       </a>
-      <a href="#" class="header__nosvg">
+      <a href="/tags/{{tag}}" class="header__nosvg">
         ТЭГ / {{tag}}
       </a>
     </div>
@@ -28,25 +28,25 @@
         <div class="item__top">
           <a href="/user-feed/{{post.poster_name}}" class="item__head">
             <div class="item__ava-wrap">
-              <img src="/img/ava1.png" alt="" class="item__ava" width="47">
+              <img src="/static/img/ava1.png" alt="" class="item__ava" width="47">
             </div>
             <span class="item__username">{{post.poster_name}}</span>
           </a>
         </div>
         <a href="/post/{{post.pk}}" class="item__post-link">
-          <img src="/img/post4.jpg" alt="" width="348" class="item__post-img">
+          <img src="/static/img/post4.jpg" alt="" width="348" class="item__post-img">
         </a>
-        <p class="item__descr"><a href="/tag/{{tag}}" class="item__tag">#{{tag}}</a>{{post.content[:90] | safe}}...</p>
+        <p class="item__descr"><a href="/tags/{{tag}}" class="item__tag">#{{tag}}</a>{{post.content | safe}}...</p>
         <div class="item__post-info">
           <div class="item__counter">
-            <img src="/img/eye.png" alt="" class="item__counter-icon" width="26">
+            <img src="/static/img/eye.png" alt="" class="item__counter-icon" width="26">
             <span class="item__counter-text">{{post.views_count}}</span>
           </div>
         </div>
         <div class="item__post-bottom">
           <a href="/post/{{post.pk}}" class="item__btn-more">Подробнее</a>
           <button type="button" class="item__bookmark-btn">
-            <img src="/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
+            <a href="/bookmarks/add/{{post.pk}}"><img src="/static/img/bookmark.png" alt="Добавить в закладки" class="item__bookmark-icon" width="24"></a>
           </button>
         </div>
       </div>

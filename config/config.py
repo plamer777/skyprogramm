@@ -6,6 +6,7 @@ from dao.posts_dao import PostsDao
 POSTS_FILE = path.join('data', 'posts.json')
 COMMENTS_FILE = path.join('data', 'comments.json')
 LOG_FILE = path.join('logs', 'api.log')
+BOOKMARKS_PATH = path.join('data', 'bookmarks.json')
 IMG_PATH = 'img'
 
 LOG_FORMAT = '%(asctime)s [%(levelname)s] %(message)s'
@@ -24,4 +25,4 @@ COMMENTS_KEYS = {'post_id',
                  'pk'
                  }
 
-post_dao = PostsDao(POSTS_FILE, COMMENTS_FILE)
+post_dao = PostsDao(POSTS_FILE, COMMENTS_FILE, BOOKMARKS_PATH)
