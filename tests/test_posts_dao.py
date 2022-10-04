@@ -64,7 +64,7 @@ class TestPostsDao:
 
     def test_get_by_pk(self, dao_test):
         """Testing get_by_pk method of PostsDao"""
-        single_post = dao_test.get_by_pk()
+        single_post = dao_test.get_by_pk(8)
 
         assert type(single_post) == dict, 'Пост приходит не в виде словаря'
         assert len(single_post) != 0, 'Словарь пуст'
@@ -73,6 +73,9 @@ class TestPostsDao:
         for key in POSTS_KEYS:
 
             assert key in single_post.keys(), 'Ключ не найден'
+
+        assert single_post.get('comments_count') == 'Нет комментариев'
+
 
     def test_search_by_keyword(self, dao_test):
         """Checking if the 'search_by_keyword' method works correct"""
@@ -109,7 +112,7 @@ class TestPostsDao:
         """Checking if ValueError raises when post id isn't found'"""
         with pytest.raises(ValueError):
 
-            dao_test.get_comments_by_post(50)
+            dao_test.get_comments_by_post(8)
 
     def test_create_tagged_posts(self, dao_test):
         """Testing create_tagged_posts method of PostsDao"""
@@ -192,3 +195,4 @@ class TestPostsDao:
         assert cut_posts[1].get('pk') == 2, 'Неверный идентификатор поста'
         assert set(cut_posts[0].keys()) == POSTS_KEYS, 'Проблема с ключами ' \
                                                        'поста'
+

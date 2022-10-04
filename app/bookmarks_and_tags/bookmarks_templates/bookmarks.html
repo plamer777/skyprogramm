@@ -30,14 +30,14 @@
         <div class="item__top">
           <a href="/user-feed/" class="item__head">
             <div class="item__ava-wrap">
-              <img src="/static/img/ava1.png" alt="" class="item__ava" width="47">
+              <img src="{{ bookmark.poster_avatar }}" alt="" class="item__ava" width="47">
             </div>
             <span class="item__username">{{bookmark.poster_name}}</span>
           </a>
           <a href="/bookmarks/remove/{{bookmark.pk}}" class="item__delete">Удалить</a>
         </div>
         <a href="/post/" class="item__post-link">
-          <img src="/static/img/post5.jpg" alt="" width="348" class="item__post-img">
+          <img src="{{bookmark.pic}}" alt="" width="348" class="item__post-img">
         </a>
         <p class="item__descr">{{bookmark.content | safe}}...<a href="/post/" class="item__btn-more">Еще</a></p>
         <div class="item__post-info">

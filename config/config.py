@@ -17,7 +17,8 @@ POSTS_KEYS = {'poster_name',
               'content',
               'views_count',
               'likes_count',
-              'pk'
+              'pk',
+              'comments_count'
               }
 COMMENTS_KEYS = {'post_id',
                  'commenter_name',

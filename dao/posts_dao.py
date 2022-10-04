@@ -22,6 +22,7 @@ class PostsDao:
         self.comments = self.load_comments()
         self.tagged_posts = self.create_tagged_posts()
         self.bookmarks = self.load_bookmarks()
+        self._add_comments_count()
 
     def load_posts(self) -> list:
         """This method uploads all posts from file
@@ -301,3 +302,15 @@ class PostsDao:
             cut_posts.append(cut_post)
 
         return cut_posts
+
+    def _add_comments_count(self):
+        """This method adds a comment_count field in all posts"""
+        for post in self.tagged_posts:
+
+            try:
+                comments = self.get_comments_by_post(post.get('pk'))
+                post['comments_count'] = len(comments)
+
+            except ValueError:
+
+                post['comments_count'] = 'Нет комментариев'

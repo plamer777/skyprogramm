@@ -28,13 +28,13 @@
         <div class="item__top">
           <a href="/user-feed/{{post.poster_name}}" class="item__head">
             <div class="item__ava-wrap">
-              <img src="/static/img/ava1.png" alt="" class="item__ava" width="47">
+              <img src="{{ post.poster_avatar }}" alt="" class="item__ava" width="47">
             </div>
             <span class="item__username">{{post.poster_name}}</span>
           </a>
         </div>
         <a href="/post/{{post.pk}}" class="item__post-link">
-          <img src="/static/img/post4.jpg" alt="" width="348" class="item__post-img">
+          <img src="{{post.pic}}" alt="" width="348" class="item__post-img">
         </a>
         <p class="item__descr"><a href="/tags/{{tag}}" class="item__tag">#{{tag}}</a>{{post.content | safe}}...</p>
         <div class="item__post-info">

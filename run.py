@@ -1,4 +1,4 @@
-from flask import Flask, send_from_directory
+from flask import Flask
 from app.api.api import api_blueprint
 from app.bookmarks_and_tags.views import bookmarks_blueprint
 
