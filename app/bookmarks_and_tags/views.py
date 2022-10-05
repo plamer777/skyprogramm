@@ -39,6 +39,6 @@ def bookmarks_page():
 
     all_bookmarks = post_dao.get_all_bookmarks()
 
-    cut_bookmarks = post_dao.cut_posts_content(all_bookmarks)
+    cut_bookmarks = post_dao.cut_posts_content(all_bookmarks, 80)
 
     return render_template('bookmarks.html', bookmarks=cut_bookmarks)

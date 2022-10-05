@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SKYPROGRAM post</title>
-  <link href="../css/styles.min.css" rel="stylesheet">
+  <link href="/static/css/styles.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -28,44 +28,36 @@
     <section class="items">
       <div class="items__item item item--post">
         <div class="item__top">
-          <a href="user-feed.html" class="item__head">
+          <a href="/user/{{ post.poster_name }}" class="item__head">
             <div class="item__ava-wrap">
-              <img src="img/ava1.png" alt="" class="item__ava" width="47">
+              <img src="{{ post.poster_avatar }}" alt="" class="item__ava" width="47">
             </div>
-            <span class="item__username">Username</span>
+            <span class="item__username">{{ post.poster_name }}</span>
           </a>
           <button type="button" class="item__bookmark-btn">
-            <img src="img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
+              <a href="/bookmarks/add/{{ post.pk }}"><img src="/static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24"></a>
           </button>
         </div>
         <a href="" class="item__post-link">
-          <img src="img/post1.jpg" alt="" width="348" class="item__post-img">
+          <img src="{{ post.pic }}" alt="" width="348" class="item__post-img">
         </a>
         <div class="item__descr">
-          <p class="item__text">
-            Закрытые бутерброды пришли к&nbsp;нам из&nbsp;Англии. Вкусные и&nbsp;простые рецепты сэндвичей с&nbsp;фото позволят вам разнообразить завтраки и&nbsp;сделать перекусы более сытными! Они могут быть, как горячими, так и&nbsp;холодными.
-          </p>
-          <p class="item__text">
-            Итальянские закрытые сэндвичи называются панини. Для их&nbsp;приготовления берут чиабатту. В&nbsp;классическом рецепте используют традиционные итальянские продукты: помидоры, базилик, мацареллу.</p>
+          <p class="item__text">{{ post.content | safe }}</p>
         </div>
         <div class="item__bottom">
           <div class="item__post-info">
-            <p class="item__comments-counter">3 комментария</p>
+            <p class="item__comments-counter">{{ post.comments_count}}</p>
             <div class="item__counter">
-              <img src="img/eye.png" alt="" class="item__counter-icon" width="26">
-              <span class="item__counter-text">1023</span>
+              <img src="/static/img/eye.png" alt="" class="item__counter-icon" width="26">
+              <span class="item__counter-text">{{ post.views_count }}</span>
             </div>
           </div>
           <div class="item__comments">
-            <p class="item__comment">
-              <b>user 1:</b> комментарий пользователя который его оставил
+              {% for comment in comments %}
+              <p class="item__comment">
+              <b>{{ comment.commenter_name }}:</b> {{comment.comment}}
             </p>
-            <p class="item__comment">
-              <b>user 2:</b> еще один комментарий
-            </p>
-            <p class="item__comment">
-              <b>user 3:</b> и&nbsp;какой-то коммент еще
-            </p>
+            {% endfor %}
           </div>
         </div>
       </div>

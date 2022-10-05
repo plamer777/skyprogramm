@@ -28,7 +28,7 @@
       {% for bookmark in bookmarks %}
       <div class="items__item item">
         <div class="item__top">
-          <a href="/user-feed/" class="item__head">
+          <a href="/user/{{ bookmark.poster_name }}" class="item__head">
             <div class="item__ava-wrap">
               <img src="{{ bookmark.poster_avatar }}" alt="" class="item__ava" width="47">
             </div>
@@ -36,10 +36,10 @@
           </a>
           <a href="/bookmarks/remove/{{bookmark.pk}}" class="item__delete">Удалить</a>
         </div>
-        <a href="/post/" class="item__post-link">
+        <a href="/post/{{ bookmark.pk }}" class="item__post-link">
           <img src="{{bookmark.pic}}" alt="" width="348" class="item__post-img">
         </a>
-        <p class="item__descr">{{bookmark.content | safe}}...<a href="/post/" class="item__btn-more">Еще</a></p>
+        <p class="item__descr">{{bookmark.content | safe}}...<a href="/post/{{ bookmark.pk }}" class="item__btn-more">Еще</a></p>
         <div class="item__post-info">
           <div class="item__counter">
             <img src="/static/img/eye.png" alt="" class="item__counter-icon" width="26">
@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="item__post-bottom">
-          <a href="/post/" class="item__btn-more">Подробнее</a>
+          <a href="/post/{{ bookmark.pk }}" class="item__btn-more">Подробнее</a>
           <button type="button" class="item__bookmark-btn">
             <img src="/static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
           </button>

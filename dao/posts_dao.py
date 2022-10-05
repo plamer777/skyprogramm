@@ -228,10 +228,13 @@ class PostsDao:
 
         :param post_id: an identificator of removed post
         """
-        post = self.get_by_pk(post_id)
 
-        if post in self.bookmarks:
-            self.bookmarks.remove(post)
+        for bookmark in self.bookmarks:
+
+            if post_id == bookmark.get('pk'):
+
+                self.bookmarks.remove(bookmark)
+                break
 
         self._save_bookmarks_to_json()
 
@@ -309,7 +312,7 @@ class PostsDao:
 
             try:
                 comments = self.get_comments_by_post(post.get('pk'))
-                post['comments_count'] = len(comments)
+                post['comments_count'] = str(len(comments)) + ' комментариев'
 
             except ValueError:
 

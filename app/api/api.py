@@ -6,7 +6,7 @@ from config.config import post_dao
 from config.config import POSTS_FILE, COMMENTS_FILE, LOG_FILE, LOG_FORMAT
 from utils import get_new_logger
 
-# Creating Blueprint, PostsDao and Logger instances
+# Creating main_blueprint, PostsDao and Logger instances
 api_blueprint = Blueprint('api_blueprint', __name__)
 api_logger = get_new_logger(LOG_FILE)
 
