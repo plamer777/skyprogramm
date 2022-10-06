@@ -3,7 +3,7 @@ all posts and post found by id in JSON format
 """
 from flask import Blueprint, jsonify
 from config.config import post_dao
-from config.config import POSTS_FILE, COMMENTS_FILE, LOG_FILE, LOG_FORMAT
+from config.config import LOG_FILE
 from utils import get_new_logger
 
 # Creating main_blueprint, PostsDao and Logger instances
