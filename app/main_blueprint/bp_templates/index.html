@@ -37,9 +37,10 @@
             <div class="item__ava-wrap">
              <a href="/user/{{ post.poster_name }}" class="item__head">
               <img src= {{ post.poster_avatar }} alt="" class="item__ava" width="47">
+                 <span class="item__username">&emsp; {{ post.poster_name }}</span>
              </a>
             </div>
-            <span class="item__username">{{ post.poster_name }}</span>
+
         </div>
         <a href="/post/{{ post.pk }}" class="item__post-link">
           <img src= {{ post.pic }} alt="" width="348" class="item__post-img">

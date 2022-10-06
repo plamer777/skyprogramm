@@ -76,7 +76,6 @@ class TestPostsDao:
 
         assert single_post.get('comments_count') == 'Нет комментариев'
 
-
     def test_search_by_keyword(self, dao_test):
         """Checking if the 'search_by_keyword' method works correct"""
         found_post = dao_test.search_by_keyword('кот')
