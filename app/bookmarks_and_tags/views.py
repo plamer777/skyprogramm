@@ -26,7 +26,7 @@ def add_bookmark(post_id):
     return redirect('/', code=302)
 
 
-@bookmarks_blueprint.route('/bookmarks/remove/<int:post_id>/')
+@bookmarks_blueprint.route('/bookmarks/remove/<int:post_id>')
 def remove_bookmark(post_id):
 
     post_dao.remove_from_bookmarks(post_id)
