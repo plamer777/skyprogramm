@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect
+from flask import Blueprint, render_template, redirect, abort
 
 from config.config import post_dao
 
@@ -11,6 +11,10 @@ bookmarks_blueprint = Blueprint('bookmarks_blueprint',
 def tags_page(tag_name: str):
 
     posts = post_dao.search_by_tag(tag_name)
+
+    # if posts not found then raise 404 error
+    if not posts:
+        abort(404)
 
     cut_posts = post_dao.cut_posts_content(posts, 80)
 

@@ -1,6 +1,6 @@
 """This unit contains views for main blueprint. There are index, post,
 search and user routes here"""
-from flask import Blueprint, render_template, request
+from flask import Blueprint, render_template, request, abort
 from config.config import post_dao
 
 # main_blueprint initialization
@@ -13,6 +13,11 @@ main_blueprint = Blueprint('main_blueprint',
 def main_index():
     """This is a view for an index page"""
     posts = post_dao.get_all()
+
+    # if posts not found then raise 404 error
+    if not posts:
+        abort(404)
+
     bookmarks = post_dao.load_bookmarks()
 
     # cutting all posts' content
@@ -30,6 +35,10 @@ def main_index():
 def single_post_page(post_id):
     """The view for a single post page by provided id"""
     post = post_dao.get_by_pk(post_id)
+
+    # if post not found then raise 404 error
+    if not post:
+        abort(404)
 
     try:
         comments_to_post = post_dao.get_comments_by_post(post_id)
@@ -72,9 +81,9 @@ def user_page(username):
         list_by_user = post_dao.get_by_user(username)
         cut_posts = post_dao.cut_posts_content(list_by_user, 80)
 
-    # if user not found then return an empty list
+    # if user not found then raise 404 error
     except ValueError:
-        cut_posts = []
+        abort(404)
 
     return render_template('user-feed.html', posts=cut_posts,
                            username=username)
