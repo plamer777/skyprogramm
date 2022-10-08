@@ -30,7 +30,13 @@ def main_index():
 def single_post_page(post_id):
     """The view for a single post page by provided id"""
     post = post_dao.get_by_pk(post_id)
-    comments_to_post = post_dao.get_comments_by_post(post_id)
+
+    try:
+        comments_to_post = post_dao.get_comments_by_post(post_id)
+
+    # if comments not found then return an empty list
+    except ValueError:
+        comments_to_post = []
 
     return render_template("post.html", post=post, comments=comments_to_post)
 
@@ -62,8 +68,13 @@ def search_page():
 @main_blueprint.route('/user/<username>')
 def user_page(username):
     """This view serves to process all /user/ requests"""
-    list_by_user = post_dao.get_by_user(username)
-    cut_posts = post_dao.cut_posts_content(list_by_user, 80)
+    try:
+        list_by_user = post_dao.get_by_user(username)
+        cut_posts = post_dao.cut_posts_content(list_by_user, 80)
+
+    # if user not found then return an empty list
+    except ValueError:
+        cut_posts = []
 
     return render_template('user-feed.html', posts=cut_posts,
                            username=username)

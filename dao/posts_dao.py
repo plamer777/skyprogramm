@@ -145,7 +145,7 @@ class PostsDao:
                     found_comments.append(comment)
 
         if not is_found:
-            raise ValueError('Нет такого поста')
+            raise ValueError('Нет комментариев для поста')
 
         return found_comments
 
