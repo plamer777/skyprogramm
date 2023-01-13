@@ -224,7 +224,7 @@ class PostsDao:
         :param post_id: an id of removed post
         """
         bookmarks = self.load_bookmarks()
-        if post_id in self.bookmarks:
+        if post_id in bookmarks:
             bookmarks.remove(post_id)
             self._save_to_json(self.bookmarks_filename, bookmarks)
 
