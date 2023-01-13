@@ -18,7 +18,7 @@ def main_index():
     if not posts:
         abort(404)
 
-    bookmarks = post_dao.load_bookmarks()
+    bookmarks = post_dao.get_all_bookmarks()
 
     # cutting all posts' content
     posts_cut = post_dao.cut_posts_content(posts, 50)
