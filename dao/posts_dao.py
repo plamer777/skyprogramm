@@ -21,8 +21,7 @@ class PostsDao:
         self.bookmarks_filename = bookmarks_path
         self.posts = self.load_posts()
         self.comments = self.load_comments()
-        self.tagged_posts = self.create_tagged_posts()
-        self.bookmarks = self.load_bookmarks()
+        self.tagged_posts = self.create_tagged_posts()        
         self._add_comments_count()
 
     @staticmethod
@@ -214,18 +213,20 @@ class PostsDao:
 
         :param post_id: identificator of saved post
         """
-        if post_id not in self.bookmarks:
-            self.bookmarks.append(post_id)
-            self._save_to_json(self.bookmarks_filename, self.bookmarks)
+        bookmarks = self.load_bookmarks()
+        if post_id not in bookmarks:
+            bookmarks.append(post_id)
+            self._save_to_json(self.bookmarks_filename, bookmarks)
 
     def remove_from_bookmarks(self, post_id: int):
         """This method removes a post from JSON file and bookmarks field
 
         :param post_id: an id of removed post
         """
+        bookmarks = self.load_bookmarks()
         if post_id in self.bookmarks:
-            self.bookmarks.remove(post_id)
-            self._save_to_json(self.bookmarks_filename, self.bookmarks)
+            bookmarks.remove(post_id)
+            self._save_to_json(self.bookmarks_filename, bookmarks)
 
     @staticmethod
     def _save_to_json(filename: str, data: Any) -> None:
@@ -246,7 +247,7 @@ class PostsDao:
     def get_all_bookmarks(self):
         """This method returns all bookmarks stored in a bookmarks field"""
 
-        bookmarks = [self.get_by_pk(bookmark) for bookmark in self.bookmarks]
+        bookmarks = [self.get_by_pk(bookmark) for bookmark in self.load_bookmarks()]
 
         return bookmarks
 
