@@ -1,6 +1,7 @@
 """The unit contains DAO class to get posts from JSON files and
 get posts by different conditions like 'pk', 'keyword', etc"""
 import json
+from typing import Any
 
 
 class PostsDao:
@@ -24,17 +25,27 @@ class PostsDao:
         self.bookmarks = self.load_bookmarks()
         self._add_comments_count()
 
+    @staticmethod
+    def load_from_json(filename: str) -> list:
+        """This method serves to load JSON files
+
+        :param filename: the name of JSON file
+
+        :return: a python object loaded from JSON file such as list or dict
+        """
+        with open(filename, encoding='utf-8') as fin:
+
+            json_data = json.load(fin)
+
+        return json_data
+
     def load_posts(self) -> list:
         """This method uploads all posts from file
 
         Return:
             post_data - a list of dicts with posts data
         """
-        with open(self.posts_filename, encoding='utf-8') as fin:
-
-            posts_data = json.load(fin)
-
-        return posts_data
+        return self.load_from_json(self.posts_filename)
 
     def load_comments(self):
         """The method uploads all comments from JSON file
@@ -42,11 +53,7 @@ class PostsDao:
         Return:
             comments_data - a list of dicts with comments data
         """
-        with open(self.comments_filename, encoding='utf-8') as fin:
-
-            comments_data = json.load(fin)
-
-        return comments_data
+        return self.load_from_json(self.comments_filename)
 
     def get_all(self) -> list:
         """This method returns all posts from posts field of an instance"""
@@ -65,7 +72,6 @@ class PostsDao:
         for post in posts:
 
             if post.get('pk') == pk:
-
                 return post
 
         return {}
@@ -84,7 +90,6 @@ class PostsDao:
         for post in posts:
 
             if keyword.lower() in post.get('content', '').lower():
-
                 found_posts.append(post)
 
         return found_posts
@@ -110,7 +115,6 @@ class PostsDao:
         for post in posts:
 
             if username.lower() in post.get('poster_name', '').lower():
-
                 is_user_found = True
 
                 if post.get('content'):
@@ -122,7 +126,7 @@ class PostsDao:
 
         return found_posts
 
-    def get_comments_by_post(self, post_id: int = 1) -> list:
+    def get_comments_by_post(self, post_id: int) -> list:
         """The method returns all comments found by post id or ValueError if
         post_id isn't found
 
@@ -131,21 +135,17 @@ class PostsDao:
         Return:
             found_comments - a list of dicts with comments data
         """
-        comments = self.comments
         found_comments = []
-        is_found = False
+        posts = self.get_by_pk(post_id)
 
-        for comment in comments:
+        if not posts:
+            raise ValueError('Такого поста не существует')
 
-            if comment.get('post_id') == post_id:
+        for comment in self.comments:
 
-                is_found = True
+            if comment.get('post_id') == post_id and comment.get('comment'):
 
-                if comment.get('comment'):
-                    found_comments.append(comment)
-
-        if not is_found:
-            raise ValueError('Нет комментариев для поста')
+                found_comments.append(comment)
 
         return found_comments
 
@@ -154,12 +154,10 @@ class PostsDao:
         tagged_posts = []
 
         for post in self.posts:
-
             # use copy of current post to save original post without links
             added_post = post.copy()
 
             if '#' in post.get('content'):
-
                 added_post = self._create_tag_link(added_post)
 
             tagged_posts.append(added_post)
@@ -183,7 +181,7 @@ class PostsDao:
                 words[num] = tagged_str
 
                 # write new content field with html tags
-                post['content'] = ' '.join(words)
+        post['content'] = ' '.join(words)
 
         return post
 
@@ -216,46 +214,41 @@ class PostsDao:
 
         :param post_id: identificator of saved post
         """
-        post = self.get_by_pk(post_id)
-
-        if post not in self.bookmarks:
-            self.bookmarks.append(post)
-
-        self._save_bookmarks_to_json()
+        if post_id not in self.bookmarks:
+            self.bookmarks.append(post_id)
+            self._save_to_json(self.bookmarks_filename, self.bookmarks)
 
     def remove_from_bookmarks(self, post_id: int):
         """This method removes a post from JSON file and bookmarks field
 
-        :param post_id: an identificator of removed post
+        :param post_id: an id of removed post
         """
+        if post_id in self.bookmarks:
+            self.bookmarks.remove(post_id)
+            self._save_to_json(self.bookmarks_filename, self.bookmarks)
 
-        for bookmark in self.bookmarks:
+    @staticmethod
+    def _save_to_json(filename: str, data: Any) -> None:
+        """A secondary method serves to save a data into JSON file
 
-            if post_id == bookmark.get('pk'):
+        :param filename: a name of the JSON file
+        :param data: serializable data such as list, dict, etc
+        """
+        with open(filename, 'w', encoding='utf-8') as fout:
 
-                self.bookmarks.remove(bookmark)
-                break
-
-        self._save_bookmarks_to_json()
-
-    def _save_bookmarks_to_json(self):
-        """A secondary method serves to save a bookmarks field of PostsDao class
-        into JSON file"""
-        with open(self.bookmarks_filename, 'w', encoding='utf-8') as fout:
-
-            json.dump(self.bookmarks, fout, ensure_ascii=False)
+            json.dump(data, fout, ensure_ascii=False)
 
     def load_bookmarks(self):
         """Loading bookmarks from JSON file"""
-        with open(self.bookmarks_filename, encoding='utf-8') as fin:
 
-            json_data = json.load(fin)
-
-        return json_data
+        return self.load_from_json(self.bookmarks_filename)
 
     def get_all_bookmarks(self):
         """This method returns all bookmarks stored in a bookmarks field"""
-        return self.bookmarks
+
+        bookmarks = [self.get_by_pk(bookmark) for bookmark in self.bookmarks]
+
+        return bookmarks
 
     def cut_content(self, post_id: int, length: int = 0):
         """Cutting a content of a post found by provided post_id to demanded
